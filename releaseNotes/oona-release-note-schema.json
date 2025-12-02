@@ -1,0 +1,598 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "OonaReleaseNote",
+  "description": "Schema for Oona release notes (refactored, defs reused across UAT/PREPROD/PROD).",
+  "fileMatch": [
+    "*.release-note.yaml"
+  ],
+  "type": "object",
+  "properties": {
+    "country": {
+      "$ref": "#/$defs/country"
+    },
+    "platform": {
+      "$ref": "#/$defs/platform"
+    },
+    "project": {
+      "type": "string",
+      "description": "The project name, e.g., 'Partnership GLoan'"
+    },
+    "releaseDate": {
+      "$ref": "#/$defs/releaseDate"
+    },
+    "releaseVersion": {
+      "$ref": "#/$defs/releaseVersion"
+    },
+    "releaseNotes": {
+      "type": "array",
+      "description": "List of release notes",
+      "items": {
+        "$ref": "#/$defs/releaseNoteItem"
+      }
+    }
+  },
+  "required": [
+    "country",
+    "platform",
+    "project",
+    "releaseDate",
+    "releaseNotes"
+  ],
+  "$defs": {
+    "country": {
+      "type": "string",
+      "description": "The country for which the release note applies",
+      "enum": [
+        "ID",
+        "PH"
+      ]
+    },
+    "platform": {
+      "type": "string",
+      "description": "The platform for which the release note applies",
+      "enum": [
+        "DTC",
+        "KAHOONA"
+      ]
+    },
+    "releaseDate": {
+      "type": "string",
+      "description": "The date of the release in DD-MM-YYYY format (e.g., 31-12-2025)",
+      "pattern": "^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\\d{4}$"
+    },
+    "releaseVersion": {
+      "type": "string",
+      "description": "The version of the release, e.g., 'v1.0.0'",
+      "pattern": "^v\\d+\\.\\d+\\.\\d+$"
+    },
+    "ticketNumber": {
+      "type": "string",
+      "description": "The ticket number associated with the release note (e.g., DDP-1602)",
+      "pattern": "^[A-Z]+-\\d+$"
+    },
+    "dbNameEnum": {
+      "type": "string",
+      "enum": [
+        "coreplus",
+        "keycloak-db",
+        "neuron_db",
+        "SEA_DMS",
+        "SEA_DMS_PREPROD",
+        "SEA_DMS_Live",
+        "STG_RENEWAL_OONA"
+      ]
+    },
+    "accountEnum": {
+      "type": "string",
+      "description": "Unified account enumeration used across environments (UAT/PREPROD/PROD).",
+      "enum": [
+        "ID-DTC-UAT",
+        "ID-DTC-PREPROD",
+        "ID-DTC-PROD",
+        "ID-INTEGRATION-UAT",
+        "ID-INTEGRATION-PREPROD",
+        "ID-INTEGRATION-PROD",
+        "ID-KAHOONA-UAT",
+        "ID-KAHOONA-PREPROD",
+        "ID-KAHOONA-PROD",
+        "PH-DTC-UAT",
+        "PH-DTC-PREPROD",
+        "PH-DTC-PROD",
+        "PH-INTEGRATION-UAT",
+        "PH-INTEGRATION-PREPROD",
+        "PH-INTEGRATION-PROD",
+        "PH-KAHOONA-UAT",
+        "PH-KAHOONA-PREPROD",
+        "PH-KAHOONA-PROD",
+        "SHARED-DTC-UAT",
+        "SHARED-DTC-PREPROD",
+        "SHARED-DTC-PROD",
+        "SHARED-INTEGRATION-UAT",
+        "SHARED-INTEGRATION-PREPROD",
+        "SHARED-INTEGRATION-PROD"
+      ]
+    },
+    "keyValue": {
+      "type": "object",
+      "description": "A key-value pair object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The key part of the key-value pair"
+        },
+        "value": {
+          "type": "string",
+          "description": "The value part of the key-value pair"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ]
+    },
+    "paramStoreEntry": {
+      "type": "string",
+      "description": "Parameter entry in /path/KEY=value format",
+      "pattern": "^/([a-z]+(/[a-z]+(/[a-z]+)?)?)/[A-Z_][A-Z0-9_]*=[^=]+$"
+    },
+    "environment": {
+      "type": "object",
+      "description": "Reusable environment object containing common resources",
+      "properties": {
+        "dataPatch": {
+          "$ref": "#/$defs/dataPatch"
+        },
+        "s3": {
+          "$ref": "#/$defs/s3"
+        },
+        "eventBridge": {
+          "$ref": "#/$defs/eventBridge"
+        },
+        "secretsManager": {
+          "$ref": "#/$defs/secretsManager"
+        },
+        "paramStore": {
+          "$ref": "#/$defs/paramStore"
+        },
+        "serverlessService": {
+          "$ref": "#/$defs/serverlessService"
+        },
+        "apiGateway": {
+          "$ref": "#/$defs/apiGateway"
+        },
+        "glueEtlJob": {
+          "$ref": "#/$defs/glueEtlJob"
+        },
+        "stateMachine": {
+          "$ref": "#/$defs/stateMachine"
+        }
+      }
+    },
+    "dataPatch": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "dbName": {
+            "$ref": "#/$defs/dbNameEnum"
+          },
+          "scriptUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The URL of the SQL script to be applied"
+            }
+          }
+        },
+        "required": [
+          "account",
+          "dbName",
+          "scriptUrls"
+        ]
+      }
+    },
+    "s3": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "bucketName": {
+            "type": "string",
+            "description": "The name of the S3 bucket"
+          }
+        },
+        "required": [
+          "account",
+          "bucketName"
+        ]
+      }
+    },
+    "eventBridgeTarget": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/accountEnum"
+        },
+        "eventPattern": {
+          "type": "string",
+          "description": "The event pattern for the target resource"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "eventBus",
+            "lambda"
+          ],
+          "description": "The target type"
+        },
+        "lambdaName": {
+          "type": "string",
+          "description": "The name of the Lambda function (required if type is 'lambda')"
+        },
+        "eventName": {
+          "type": "string",
+          "description": "The name of the EventBridge event bus (required if type is 'eventBus')"
+        }
+      },
+      "required": [
+        "account",
+        "eventPattern",
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "lambda"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "lambdaName"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "eventBus"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "eventName"
+            ]
+          }
+        }
+      ]
+    },
+    "eventBridge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "eventBus"
+            ],
+            "description": "The type of EventBridge resource"
+          },
+          "target": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/eventBridgeTarget"
+            }
+          }
+        }
+      }
+    },
+    "secretPermission": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/accountEnum"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "lambda"
+          ],
+          "description": "The type of AWS service for which the permission is granted"
+        },
+        "lambdaName": {
+          "type": "string",
+          "description": "The name of the Lambda function (required if type is 'lambda')"
+        }
+      },
+      "required": [
+        "account",
+        "type"
+      ],
+      "if": {
+        "properties": {
+          "type": {
+            "const": "lambda"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "lambdaName"
+        ]
+      }
+    },
+    "secretEntry": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/accountEnum"
+        },
+        "secretName": {
+          "type": "string",
+          "description": "The secret name used in the environment"
+        },
+        "secrets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/keyValue"
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/secretPermission"
+          }
+        }
+      },
+      "required": [
+        "account",
+        "secretName",
+        "secrets",
+        "permissions"
+      ]
+    },
+    "secretsManager": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/secretEntry"
+      }
+    },
+    "paramStore": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/paramStoreEntry"
+            }
+          }
+        },
+        "required": [
+          "account",
+          "parameters"
+        ]
+      }
+    },
+    "serverlessService": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "repoUrls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The repository URL for the serverless service"
+            }
+          }
+        },
+        "required": [
+          "account",
+          "repoUrls"
+        ]
+      }
+    },
+    "apiGatewayTarget": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/$defs/accountEnum"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "lambda"
+          ],
+          "description": "The type of target resource"
+        },
+        "lambdaName": {
+          "type": "string",
+          "description": "The name of the Lambda function"
+        }
+      },
+      "required": [
+        "type",
+        "account",
+        "lambdaName"
+      ]
+    },
+    "apiGateway": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "apiName": {
+            "type": "string",
+            "description": "The name of the API Gateway",
+            "enum": [
+              "oona-id-integration-uat-api-gateway",
+              "oona-id-integration-uat-neuron-api-gateway",
+              "oona-id-integration-uat-partner-api-gateway",
+              "oona-id-integration-preprod-api-gateway",
+              "oona-id-integration-preprod-neuron-api-gateway",
+              "oona-id-integration-preprod-partner-api-gateway",
+              "oona-id-integration-prod-api-gateway",
+              "oona-id-integration-prod-neuron-api-gateway",
+              "oona-id-integration-prod-partner-api-gateway",
+              "oona-ph-integration-uat-neuron-api-gateway",
+              "oona-ph-integration-uat-partner-api-gateway",
+              "oona-ph-integration-preprod-neuron-api-gateway",
+              "oona-ph-integration-preprod-partner-api-gateway",
+              "oona-ph-integration-prod-neuron-api-gateway",
+              "oona-ph-integration-prod-partner-api-gateway",
+              "oona-shared-integration-uat-neuron-api-gateway",
+              "oona-shared-integration-uat-private-http-api-gw",
+              "oona-shared-integration-uat-public-http-api-gw",
+              "oona-shared-integration-preprod-neuron-api-gateway",
+              "oona-shared-integration-preprod-private-http-api-gw",
+              "oona-shared-integration-preprod-public-http-api-gw",
+              "oona-shared-integration-prod-neuron-api-gateway",
+              "oona-shared-integration-prod-private-http-api-gw",
+              "oona-shared-integration-prod-public-http-api-gw"
+            ]
+          },
+          "auth": {
+            "type": "string",
+            "description": "The authentication method used",
+            "enum": [
+              "none",
+              "lambda-authorizer"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "description": "The HTTP method for the API Gateway",
+            "enum": [
+              "ANY",
+              "DELETE",
+              "GET",
+              "PATCH",
+              "OPTIONS",
+              "POST",
+              "PUT"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "The resource path for the API Gateway (e.g., /partner/gcash/loan/decrypt)"
+          },
+          "target": {
+            "$ref": "#/$defs/apiGatewayTarget"
+          }
+        },
+        "required": [
+          "account",
+          "apiName",
+          "auth",
+          "method",
+          "path",
+          "target"
+        ]
+      }
+    },
+    "glueEtlJob": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "etlJobName": {
+            "type": "string",
+            "description": "The name of the Glue ETL job"
+          },
+          "scriptUrl": {
+            "type": "string",
+            "description": "The URL of the ETL script"
+          }
+        },
+        "required": [
+          "account",
+          "etlJobName",
+          "scriptUrl"
+        ]
+      }
+    },
+    "stateMachine": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "stateMachineName": {
+            "type": "string",
+            "description": "The name of the Step Functions state machine"
+          },
+          "code": {
+            "type": "string",
+            "description": "The JSONata definition of the state machine"
+          }
+        },
+        "required": [
+          "account",
+          "stateMachineName",
+          "code"
+        ]
+      }
+    },
+    "releaseNoteItem": {
+      "type": "object",
+      "properties": {
+        "ticketNumber": {
+          "$ref": "#/$defs/ticketNumber"
+        },
+        "ticketName": {
+          "type": "string",
+          "description": "The name or description of the ticket"
+        },
+        "developer": {
+          "type": "string",
+          "description": "The name of the developer responsible for the ticket"
+        },
+        "UAT": {
+          "$ref": "#/$defs/environment"
+        },
+        "PREPROD": {
+          "$ref": "#/$defs/environment"
+        },
+        "PROD": {
+          "$ref": "#/$defs/environment"
+        }
+      },
+      "required": [
+        "ticketNumber",
+        "ticketName",
+        "developer",
+        "PROD"
+      ]
+    }
+  }
+}
