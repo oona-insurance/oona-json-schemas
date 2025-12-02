@@ -148,6 +148,9 @@
         "eventBridge": {
           "$ref": "#/$defs/eventBridge"
         },
+        "sqs": {
+          "$ref": "#/$defs/sqs"
+        },
         "secretsManager": {
           "$ref": "#/$defs/secretsManager"
         },
@@ -298,6 +301,25 @@
             }
           }
         }
+      }
+    },
+    "sqs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/$defs/accountEnum"
+          },
+          "queueName": {
+            "type": "string",
+            "description": "The name of the SQS queue"
+          }
+        },
+        "required": [
+          "account",
+          "queueName"
+        ]
       }
     },
     "secretPermission": {
