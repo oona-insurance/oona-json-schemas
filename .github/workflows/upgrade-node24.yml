@@ -1,8 +1,0 @@
-name: Upgrade Node.js to 24
-
-on:
-  workflow_dispatch:
-
-jobs:
-  upgrade:
-    uses: oona-insurance/workflows/.github/workflows/main.yml@main
