@@ -45,7 +45,8 @@
       "description": "The country for which the release note applies",
       "enum": [
         "ID",
-        "PH"
+        "PH",
+        "SHARED"
       ]
     },
     "platform": {
