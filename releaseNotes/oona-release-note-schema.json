@@ -3,7 +3,8 @@
   "title": "OonaReleaseNote",
   "description": "Schema for Oona release notes (refactored, defs reused across UAT/PREPROD/PROD).",
   "fileMatch": [
-    "*.release-note.yaml"
+    "*.release-note.yaml",
+    "*.release-note.yml"
   ],
   "type": "object",
   "properties": {
