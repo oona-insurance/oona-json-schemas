@@ -300,7 +300,7 @@
             "type": "string",
             "description": "The name of the EventBridge event bus (required if type is 'eventBus')"
           },
-          "target": {
+          "targets": {
             "type": "array",
             "items": {
               "$ref": "#/$defs/eventBridgeTarget"
